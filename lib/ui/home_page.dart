@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Contatos"),
+        title: Text("Agenda de Contatos"),
         backgroundColor: Colors.black,
         centerTitle: true,
         actions: <Widget>[
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text("Ordernar de Z-A"),
                 value: OrderOptions.orderza,
               )
-            ],
+            ], //
             onSelected: _orderList,
           ),
         ],

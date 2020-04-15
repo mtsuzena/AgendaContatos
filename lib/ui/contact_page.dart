@@ -76,13 +76,7 @@ class _ContactPageState extends State<ContactPage> {
                           fit: BoxFit.cover)),
                 ),
                 onTap: () {
-                  ImagePicker.pickImage(source: ImageSource.camera)
-                      .then((file) {
-                    if (file == null) return;
-                    setState(() {
-                      _editedContact.img = file.path;
-                    });
-                  });
+                  _showOptionsImage();
                 },
               ),
               TextField(
@@ -119,6 +113,66 @@ class _ContactPageState extends State<ContactPage> {
         ),
       ),
     );
+  }
+
+  void _showOptionsImage() {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return BottomSheet(
+            onClosing: () {},
+            builder: (context) {
+              return Container(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Camera",
+                          style: TextStyle(color: Colors.black, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          ImagePicker.pickImage(source: ImageSource.camera)
+                              .then((file) {
+                            if (file == null) return;
+                            print('Printando path imagem: $file.path');
+                            setState(() {
+                              _editedContact.img = file.path;
+                            });
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: FlatButton(
+                        child: Text(
+                          "Galeria",
+                          style: TextStyle(color: Colors.black, fontSize: 20.0),
+                        ),
+                        onPressed: () {
+                          ImagePicker.pickImage(source: ImageSource.gallery)
+                              .then((file) {
+                            if (file == null) return;
+                            print('Printando path imagem: $file.path');
+                            setState(() {
+                              _editedContact.img = file.path;
+                            });
+                          });
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        });
   }
 
   Future<bool> _requestPop() {
