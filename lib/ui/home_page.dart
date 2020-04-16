@@ -29,7 +29,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Agenda de Contatos"),
+        title: Text("Contatos"),
         backgroundColor: Colors.black,
         centerTitle: true,
         actions: <Widget>[
@@ -81,7 +81,9 @@ class _HomePageState extends State<HomePage> {
                       image: DecorationImage(
                           image: contacts[index].img != null
                               ? FileImage(File(contacts[index].img))
-                              : AssetImage("images/person.png"),
+                              : contacts[index].man == "true"
+                                  ? AssetImage("images/man.png")
+                                  : AssetImage("images/woman.png"),
                           fit: BoxFit.cover)),
                 ),
                 Padding(
@@ -103,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                       Text(
                         contacts[index].phone ?? "",
                         style: TextStyle(fontSize: 18.0),
-                      )
+                      ),
                     ],
                   ),
                 )

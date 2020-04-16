@@ -18,6 +18,8 @@ class _ContactPageState extends State<ContactPage> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
+  bool _isMan = false;
+  bool _isWoman = false;
 
   final _nameFocus = FocusNode();
 
@@ -35,6 +37,8 @@ class _ContactPageState extends State<ContactPage> {
       _nameController.text = _editedContact.name;
       _emailController.text = _editedContact.email;
       _phoneController.text = _editedContact.phone;
+      _isMan = toBoolean(_editedContact.man);
+      _isWoman = toBoolean(_editedContact.woman);
     }
   }
 
@@ -72,7 +76,9 @@ class _ContactPageState extends State<ContactPage> {
                       image: DecorationImage(
                           image: _editedContact.img != null
                               ? FileImage(File(_editedContact.img))
-                              : AssetImage("images/person.png"),
+                              : _editedContact.man == "true"
+                                  ? AssetImage("images/man.png")
+                                  : AssetImage("images/woman.png"),
                           fit: BoxFit.cover)),
                 ),
                 onTap: () {
@@ -107,7 +113,52 @@ class _ContactPageState extends State<ContactPage> {
                   _editedContact.phone = text;
                 },
                 keyboardType: TextInputType.phone,
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Text("Masculino"),
+                  Checkbox(
+                    value: _isMan,
+                    onChanged: (bool value) {
+                      setState(() {
+                        if (value) {
+                          _isMan = true;
+                          _isWoman = false;
+                        } else {
+                          _isMan = false;
+                        }
+
+                        _editedContact.man = toString(_isMan);
+                        _editedContact.woman = toString(_isWoman);
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 70,
+                  ),
+                  SizedBox(
+                    width: 20,
+                  ),
+                  Text("Feminino"),
+                  Checkbox(
+                    value: _isWoman,
+                    onChanged: (bool value) {
+                      setState(() {
+                        if (value) {
+                          _isWoman = true;
+                          _isMan = false;
+                        } else {
+                          _isWoman = false;
+                        }
+
+                        _editedContact.man = toString(_isMan);
+                        _editedContact.woman = toString(_isWoman);
+                      });
+                    },
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -205,4 +256,18 @@ class _ContactPageState extends State<ContactPage> {
       return Future.value(true);
     }
   }
+}
+
+String toString(bool b) {
+  if (b) {
+    return "true";
+  }
+  return "false";
+}
+
+bool toBoolean(String str) {
+  if (str == "true") {
+    return true;
+  }
+  return false;
 }

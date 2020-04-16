@@ -9,6 +9,8 @@ final String nameColumn = "nameColumn";
 final String emailColumn = "emailColumn";
 final String phoneColumn = "phoneColumn";
 final String imgColumn = "imgColumn";
+final String isMan = "isMan";
+final String isWoman = "isWoman";
 
 class ContactHelper {
   static final ContactHelper _instance = ContactHelper.internal();
@@ -35,7 +37,7 @@ class ContactHelper {
     return await openDatabase(path, version: 1,
         onCreate: (Database db, int newerVersion) async {
       await db.execute(
-          "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT, $phoneColumn TEXT, $imgColumn TEXT)");
+          "CREATE TABLE $contactTable($idColumn INTEGER PRIMARY KEY, $nameColumn TEXT, $emailColumn TEXT, $phoneColumn TEXT, $imgColumn TEXT, $isMan TEXT, $isWoman TEXT)");
     });
   }
 
@@ -48,7 +50,15 @@ class ContactHelper {
   Future<Contact> getContact(int id) async {
     Database dbContact = await db;
     List<Map> maps = await dbContact.query(contactTable,
-        columns: [idColumn, nameColumn, emailColumn, phoneColumn, imgColumn],
+        columns: [
+          idColumn,
+          nameColumn,
+          emailColumn,
+          phoneColumn,
+          imgColumn,
+          isMan,
+          isWoman
+        ],
         where: "$idColumn = ?",
         whereArgs: [id]);
 
@@ -99,6 +109,8 @@ class Contact {
   String email;
   String phone;
   String img;
+  String man;
+  String woman;
 
   Contact();
 
@@ -108,6 +120,8 @@ class Contact {
     email = map[emailColumn];
     phone = map[phoneColumn];
     img = map[imgColumn];
+    man = map[isMan];
+    woman = map[isWoman];
   }
 
   Map toMap() {
@@ -115,7 +129,9 @@ class Contact {
       nameColumn: name,
       emailColumn: email,
       phoneColumn: phone,
-      imgColumn: img
+      imgColumn: img,
+      isMan: man,
+      isWoman: woman
     };
     if (id != null) {
       map[idColumn] = id;
@@ -125,6 +141,6 @@ class Contact {
 
   @override
   String toString() {
-    return "Contact(id: $id, name: $name, email: $email, phone: $phone, img: $img)";
+    return "Contact(id: $id, name: $name, email: $email, phone: $phone, img: $img, man: $man, woman: $woman)";
   }
 }

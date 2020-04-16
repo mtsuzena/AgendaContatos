@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.1.0 <3.0.0'
+  sdk: ">=2.1.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -46,6 +46,8 @@ flutter:
   #  - images/a_dot_ham.jpeg
   assets:
     - images/person.png
+    - images/man.png
+    - images/woman.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
@@ -71,4 +73,4 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
 
 module:
-    androidX: true
+  androidX: true
