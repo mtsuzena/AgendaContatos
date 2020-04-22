@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "920907814428",
+    "firebase_url": "https://agenda-de-contatos-69607.firebaseio.com",
+    "project_id": "agenda-de-contatos-69607",
+    "storage_bucket": "agenda-de-contatos-69607.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:920907814428:android:108d492de7afbacc77f1d9",
+        "android_client_info": {
+          "package_name": "com.example.agenda_de_contatos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "920907814428-el5qtvitn1i1k1rebejcoruut65o4pve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-oF7fTr9Q3J-iJmKk4GqXfMfQ8LcNqjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "920907814428-el5qtvitn1i1k1rebejcoruut65o4pve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

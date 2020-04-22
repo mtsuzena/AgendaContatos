@@ -1,7 +1,8 @@
 import 'dart:async';
-
+import 'dart:convert';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 final String contactTable = "contactTable";
 final String idColumn = "idColumn";
@@ -18,6 +19,8 @@ class ContactHelper {
   factory ContactHelper() => _instance;
 
   ContactHelper.internal();
+
+  var db2 = Firestore.instance;
 
   Database _db;
 
@@ -42,8 +45,24 @@ class ContactHelper {
   }
 
   Future<Contact> saveContact(Contact contact) async {
+    // Salvando no sqlite
     Database dbContact = await db;
     contact.id = await dbContact.insert(contactTable, contact.toMap());
+
+    // Salvando no firebase
+    Firestore.instance
+        .collection("contatos")
+        .document(contact.id.toString())
+        .setData({
+      "idColumn": contact.id.toString(),
+      "nameColumn": contact.name,
+      "emailColumn": contact.email,
+      "phoneColumn": contact.phone,
+      "imgColumn": contact.img,
+      "isMan": contact.man,
+      "isWoman": contact.woman
+    });
+
     return contact;
   }
 
@@ -71,23 +90,71 @@ class ContactHelper {
 
   Future<int> deleteContact(int id) async {
     Database dbContact = await db;
+
+    Firestore.instance
+        .collection("contatos")
+        .document(id.toString())
+        .delete();
+
     return await dbContact
         .delete(contactTable, where: "$idColumn = ?", whereArgs: [id]);
   }
 
   Future<int> updateContact(Contact contact) async {
     Database dbContact = await db;
+
+    Firestore.instance
+        .collection("contatos")
+        .document(contact.id.toString())
+        .updateData({
+          "nameColumn": contact.name, 
+          "emailColumn": contact.email,
+          "phoneColumn": contact.phone,
+          "imgColumn": contact.img,
+          "isMan": contact.man,
+          "isWoman": contact.woman
+        });
+
     return await dbContact.update(contactTable, contact.toMap(),
         where: "$idColumn = ?", whereArgs: [contact.id]);
   }
 
+
+
   Future<List> getAllContacts() async {
-    Database dbContact = await db;
-    List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable");
+    // Database dbContact = await db;
+    // List listMap = await dbContact.rawQuery("SELECT * FROM $contactTable");
     List<Contact> listContact = List();
-    for (Map m in listMap) {
-      listContact.add(Contact.fromMap(m));
-    }
+    // for (Map m in listMap) {
+    //   listContact.add(Contact.fromMap(m));
+    // }
+
+
+    QuerySnapshot res =
+        await db2.collection("contatos").getDocuments();
+
+    res.documents.forEach((value){
+
+
+      
+      // listContactFirebase.add({
+      //   'idColumn': value.data['idColumn'],
+      // });
+
+      Contact con = new Contact();
+      con.name = value.data['nameColumn'];
+      con.id = int.parse(value.data['idColumn']);
+      con.email = value.data['emailColumn'];
+      con.phone = value.data['phoneColumn'];
+      con.img = value.data['imgColumn'];
+      con.man = value.data['isMan'];
+      con.woman = value.data['isWoman'];
+
+      //var print = value.data['isWoman'];
+      listContact.add(con);
+
+    });
+
     return listContact;
   }
 
