@@ -21,6 +21,8 @@ class _ContactPageState extends State<ContactPage> {
   bool _isMan = false;
   bool _isWoman = false;
 
+  final _formKey = GlobalKey<FormState>();
+
   final _nameFocus = FocusNode();
 
   bool _userEdited = false;
@@ -54,7 +56,7 @@ class _ContactPageState extends State<ContactPage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            if (_editedContact.name != null && _editedContact.name.isNotEmpty) {
+            if (_formKey.currentState.validate()) {
               Navigator.pop(context, _editedContact);
             } else {
               FocusScope.of(context).requestFocus(_nameFocus);
@@ -85,85 +87,114 @@ class _ContactPageState extends State<ContactPage> {
                   _showOptionsImage();
                 },
               ),
-              TextField(
-                controller: _nameController,
-                focusNode: _nameFocus,
-                decoration: InputDecoration(labelText: "Nome"),
-                onChanged: (text) {
-                  _userEdited = true;
-                  setState(() {
-                    _editedContact.name = text;
-                  });
-                },
-              ),
-              TextField(
-                controller: _emailController,
-                decoration: InputDecoration(labelText: "Email"),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedContact.email = text;
-                },
-                keyboardType: TextInputType.emailAddress,
-              ),
-              TextField(
-                controller: _phoneController,
-                decoration: InputDecoration(labelText: "Telefone"),
-                onChanged: (text) {
-                  _userEdited = true;
-                  _editedContact.phone = text;
-                },
-                keyboardType: TextInputType.phone,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  Text("Masculino"),
-                  Checkbox(
-                    value: _isMan,
-                    onChanged: (bool value) {
-                      setState(() {
-                        if (value) {
-                          _isMan = true;
-                          _isWoman = false;
-                        } else {
-                          _isMan = false;
+              Form(
+                  key: _formKey,
+                  child: Column(children: <Widget>[
+                    TextFormField(
+                      controller: _nameController,
+                      focusNode: _nameFocus,
+                      decoration: InputDecoration(labelText: "Nome"),
+                      onChanged: (text) {
+                        _userEdited = true;
+                        setState(() {
+                          _editedContact.name = text;
+                        });
+                      },
+                      validator: (value) {
+                        if (value == null) {
+                          return "O nome não pode estar em branco";
                         }
 
-                        _editedContact.man = toString(_isMan);
-                        _editedContact.woman = toString(_isWoman);
-                      });
-                    },
-                  ),
-                  SizedBox(
-                    height: 70,
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Text("Feminino"),
-                  Checkbox(
-                    value: _isWoman,
-                    onChanged: (bool value) {
-                      setState(() {
-                        if (value) {
-                          _isWoman = true;
-                          _isMan = false;
-                        } else {
-                          _isWoman = false;
+                        if (value.isEmpty) {
+                          return "O nome não pode estar em branco";
                         }
 
-                        _editedContact.man = toString(_isMan);
-                        _editedContact.woman = toString(_isWoman);
-                      });
-                    },
-                  ),
-                ],
-              ),
+                        return null;
+                      },
+                    ),
+                    TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(labelText: "Email"),
+                      onChanged: (text) {
+                        _userEdited = true;
+                        _editedContact.email = text;
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (!validateEmail(value) && value.isNotEmpty) {
+                          return "E-mail inválido";
+                        }
+
+                        return null;
+                      },
+                    ),
+                    TextField(
+                      controller: _phoneController,
+                      decoration: InputDecoration(labelText: "Telefone"),
+                      onChanged: (text) {
+                        _userEdited = true;
+                        _editedContact.phone = text;
+                      },
+                      keyboardType: TextInputType.phone,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text("Masculino"),
+                        Checkbox(
+                          value: _isMan,
+                          onChanged: (bool value) {
+                            setState(() {
+                              if (value) {
+                                _isMan = true;
+                                _isWoman = false;
+                              } else {
+                                _isMan = false;
+                              }
+
+                              _editedContact.man = toString(_isMan);
+                              _editedContact.woman = toString(_isWoman);
+                            });
+                          },
+                        ),
+                        SizedBox(
+                          height: 70,
+                        ),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Text("Feminino"),
+                        Checkbox(
+                          value: _isWoman,
+                          onChanged: (bool value) {
+                            setState(() {
+                              if (value) {
+                                _isWoman = true;
+                                _isMan = false;
+                              } else {
+                                _isWoman = false;
+                              }
+
+                              _editedContact.man = toString(_isMan);
+                              _editedContact.woman = toString(_isWoman);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ])),
             ],
           ),
         ),
       ),
     );
+  }
+
+  bool validateEmail(String email) {
+    bool emailValid = RegExp(
+            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+.[a-zA-Z]+")
+        .hasMatch(email);
+    return emailValid;
   }
 
   void _showOptionsImage() {
